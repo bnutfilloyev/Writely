@@ -509,8 +509,8 @@ main() {
     check_requirements
     
     # Install dependencies
-    install_docker
-    install_docker_compose
+    # install_docker
+    # install_docker_compose
     
     # Set up application
     create_app_user
