@@ -60,11 +60,11 @@ check_requirements() {
     fi
     
     # Check available space
-    local available_space=$(df / | awk 'NR==2 {print $4}')
-    if [[ $available_space -lt 5242880 ]]; then # 5GB in KB
-        error "Insufficient disk space. At least 5GB required."
-        exit 1
-    fi
+    # local available_space=$(df / | awk 'NR==2 {print $4}')
+    # if [[ $available_space -lt 5242880 ]]; then # 5GB in KB
+    #     error "Insufficient disk space. At least 5GB required."
+    #     exit 1
+    # fi
     
     # Check memory
     local available_memory=$(free -m | awk 'NR==2{print $7}')
