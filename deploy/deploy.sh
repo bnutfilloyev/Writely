@@ -135,6 +135,14 @@ build_and_start() {
         docker-compose down
     fi
     
+    # Check if port 8080 is in use and try to free it
+    if netstat -tlnp | grep -q ":8080 "; then
+        warn "Port 8080 is in use. Attempting to stop conflicting services..."
+        # Try to stop any existing containers using this port
+        docker ps -q --filter "publish=8080" | xargs -r docker stop
+        sleep 5
+    fi
+    
     # Build images
     log "Building Docker images..."
     docker-compose build --no-cache
@@ -164,7 +172,7 @@ run_health_check() {
     # Wait a bit more for application to be fully ready
     sleep 10
     
-    local health_url="http://localhost:8000/health"
+    local health_url="http://localhost:8080/health"
     local max_attempts=12
     local attempt=1
     
@@ -193,7 +201,7 @@ display_summary() {
     echo "=========================================="
     echo ""
     echo "📍 Application Directory: $APP_DIR"
-    echo "🔗 Health Check URL: http://localhost:8000/health"
+    echo "🔗 Health Check URL: http://localhost:8080/health"
     echo ""
     echo "🔧 Management Commands:"
     echo "  Logs:    docker-compose -f $APP_DIR/docker-compose.yml logs -f"
