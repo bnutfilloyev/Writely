@@ -12,7 +12,7 @@ services:
       - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
       - OPENROUTER_SITE_URL=${OPENROUTER_SITE_URL:-https://ielts-telegram-bot.local}
       - OPENROUTER_SITE_NAME=${OPENROUTER_SITE_NAME:-IELTS Writing Bot}
-      - DATABASE_URL=sqlite:///./data/ielts_bot.db
+      - DATABASE_URL=sqlite+aiosqlite:///./data/ielts_bot.db
       - DEBUG=false
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
       - ENABLE_API=true

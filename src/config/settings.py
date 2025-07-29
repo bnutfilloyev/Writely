@@ -23,7 +23,7 @@ class Settings:
     OPENROUTER_SITE_NAME: str = os.getenv("OPENROUTER_SITE_NAME", "IELTS Writing Bot")
     
     # Database Configuration
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./ielts_bot.db")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./data/ielts_bot.db")
     
     # Application Configuration
     DEBUG: bool = os.getenv("DEBUG", "False").lower() == "true"
