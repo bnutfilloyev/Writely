@@ -31,16 +31,25 @@ from src.middleware.database_middleware import DatabaseMiddleware
 
 def setup_logging():
     """Configure logging for the application."""
-    if settings.DEBUG:
-        # Simple logging for development
+    try:
+        if settings.DEBUG:
+            # Simple logging for development
+            logging.basicConfig(
+                level=getattr(logging, settings.LOG_LEVEL.upper()),
+                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                handlers=[logging.StreamHandler(sys.stdout)]
+            )
+        else:
+            # Production logging with file rotation
+            setup_production_logging()
+    except Exception as e:
+        # Fallback to basic console logging if production logging fails
+        print(f"Warning: Production logging setup failed ({e}). Using basic console logging.")
         logging.basicConfig(
-            level=getattr(logging, settings.LOG_LEVEL.upper()),
+            level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO),
             format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
             handlers=[logging.StreamHandler(sys.stdout)]
         )
-    else:
-        # Production logging with file rotation
-        setup_production_logging()
 
 
 # Global bot and dispatcher instances

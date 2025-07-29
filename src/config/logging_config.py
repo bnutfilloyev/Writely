@@ -44,15 +44,23 @@ class ProductionLoggingConfig:
     
     def setup_file_handler(self, filename: Path, level: int = logging.INFO) -> logging.Handler:
         """Setup rotating file handler."""
-        handler = logging.handlers.RotatingFileHandler(
-            filename=filename,
-            maxBytes=self.max_bytes,
-            backupCount=self.backup_count,
-            encoding='utf-8'
-        )
-        handler.setLevel(level)
-        handler.setFormatter(self.get_formatter(include_extra=True))
-        return handler
+        try:
+            # Ensure directory exists and is writable
+            filename.parent.mkdir(parents=True, exist_ok=True)
+            
+            handler = logging.handlers.RotatingFileHandler(
+                filename=filename,
+                maxBytes=self.max_bytes,
+                backupCount=self.backup_count,
+                encoding='utf-8'
+            )
+            handler.setLevel(level)
+            handler.setFormatter(self.get_formatter(include_extra=True))
+            return handler
+        except (PermissionError, OSError) as e:
+            # If file logging fails, fall back to console only
+            print(f"Warning: Could not set up file logging ({e}). Using console logging only.")
+            return self.setup_console_handler(level)
     
     def setup_console_handler(self, level: int = logging.INFO) -> logging.Handler:
         """Setup console handler for stdout."""
