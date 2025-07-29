@@ -208,7 +208,18 @@ case "${1:-}" in
         echo "Options:"
         echo "  --help        Show this help message"
         echo "  --force       Force deployment"
+        echo "  --update      Quick update (use deploy/fast-update.sh instead)"
         echo ""
+        echo "For updates, use: ./deploy/fast-update.sh"
+        echo ""
+        ;;
+    --update)
+        if [[ -f "deploy/fast-update.sh" ]]; then
+            exec ./deploy/fast-update.sh "$@"
+        else
+            error "Fast update script not found"
+            exit 1
+        fi
         ;;
     *)
         main "$@"

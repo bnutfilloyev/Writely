@@ -5,7 +5,7 @@ This directory contains all the necessary scripts and configurations for deployi
 ## 📁 Files Overview
 
 - **`deploy.sh`** - Main deployment script for fresh installations
-- **`update.sh`** - Update script for existing deployments
+- **`fast-update.sh`** - Fast update script for existing deployments
 - **`verify-deployment.sh`** - Comprehensive deployment verification
 - **`quick-verify.py`** - Quick Python-based verification script
 - **`monitoring.yml`** - Docker Compose monitoring configuration
@@ -129,21 +129,29 @@ The deployment uses Docker Compose with the following services:
 
 ### Updates
 
-For existing deployments:
+For existing deployments, use the fast update script:
 
 ```bash
-# Check for updates
-sudo ./deploy/update.sh --check-only
+# Quick update (auto-detects if rebuild needed)
+./deploy/fast-update.sh
 
-# Perform update
-sudo ./deploy/update.sh
+# Or use the shortcut
+./update
 
-# Force update (skip backup)
-sudo ./deploy/update.sh --force
+# Fast restart only (no code pull)
+./deploy/fast-update.sh --fast
 
-# Rollback if needed
-sudo ./deploy/update.sh --rollback
+# Full rebuild and restart
+./deploy/fast-update.sh --full
+
+# Check status
+./deploy/fast-update.sh --status
+
+# View logs
+./deploy/fast-update.sh --logs=100
 ```
+
+**Note**: The fast update script doesn't require sudo and works in the current directory.
 
 ## 🏥 Health Monitoring
 
