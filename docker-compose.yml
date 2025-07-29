@@ -8,7 +8,10 @@ services:
     environment:
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4}
+      - OPENAI_MODEL=${OPENAI_MODEL:-meta-llama/llama-3.1-8b-instruct:free}
+      - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      - OPENROUTER_SITE_URL=${OPENROUTER_SITE_URL:-https://ielts-telegram-bot.local}
+      - OPENROUTER_SITE_NAME=${OPENROUTER_SITE_NAME:-IELTS Writing Bot}
       - DATABASE_URL=sqlite:///./data/ielts_bot.db
       - DEBUG=false
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
@@ -16,9 +19,9 @@ services:
       - DAILY_SUBMISSION_LIMIT=${DAILY_SUBMISSION_LIMIT:-3}
       - PRO_DAILY_LIMIT=${PRO_DAILY_LIMIT:-50}
       - API_HOST=0.0.0.0
-      - API_PORT=3333
+      - API_PORT=8000
     ports:
-      - "3333:3333"
+      - "8000:8000"
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
