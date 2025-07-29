@@ -81,8 +81,8 @@ full_update() {
     docker-compose down
     
     # Rebuild and start
-    docker-compose build --no-cache
-    docker-compose up -d
+    # docker-compose build --no-cache
+    docker-compose up -d --build
     
     # Wait for startup
     sleep 30
