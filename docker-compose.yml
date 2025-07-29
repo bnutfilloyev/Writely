@@ -16,9 +16,9 @@ services:
       - DAILY_SUBMISSION_LIMIT=${DAILY_SUBMISSION_LIMIT:-3}
       - PRO_DAILY_LIMIT=${PRO_DAILY_LIMIT:-50}
       - API_HOST=0.0.0.0
-      - API_PORT=8000
+      - API_PORT=3333
     ports:
-      - "8000:8000"
+      - "3333:3333"
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
