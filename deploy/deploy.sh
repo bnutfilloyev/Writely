@@ -506,7 +506,7 @@ main() {
     
     # Pre-deployment checks
     check_root
-    check_requirements
+    # check_requirements
     
     # Install dependencies
     # install_docker
