@@ -1,3 +1,0 @@
-#!/bin/bash
-# Quick update alias - just run ./update
-exec ./deploy/fast-update.sh "$@"

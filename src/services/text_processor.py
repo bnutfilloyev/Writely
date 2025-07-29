@@ -13,7 +13,7 @@ from typing import Optional, List, Dict, Any
 from langdetect import detect, DetectorFactory
 from langdetect.lang_detect_exception import LangDetectException
 
-from src.models.submission import TaskType
+from src.models.enums import TaskType
 
 logger = logging.getLogger(__name__)
 

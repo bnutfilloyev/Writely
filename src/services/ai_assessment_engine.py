@@ -14,14 +14,10 @@ from typing import Dict, List, Optional, Any
 import openai
 from openai import AsyncOpenAI
 
+from src.models.enums import TaskType
 from src.exceptions import AIServiceError, ConfigurationError
 
 logger = logging.getLogger(__name__)
-
-
-class TaskType(Enum):
-    TASK_1 = "task_1"
-    TASK_2 = "task_2"
 
 
 @dataclass

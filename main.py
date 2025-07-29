@@ -7,6 +7,7 @@ import signal
 import sys
 import os
 import time
+from datetime import datetime
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
@@ -15,18 +16,14 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand
-from fastapi import FastAPI, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import FastAPI
 import uvicorn
 
 from src.config.settings import settings
 from src.config.logging_config import setup_production_logging, get_access_logger
-from src.database.base import get_db_session, init_database, close_database
-from src.database.init import migrate_database, check_database_connection
-from src.handlers import start_handler, submission_handler, history_handler, callback_handler
+from src.handlers import start_router, submission_router, callback_router
 from src.middleware.logging_middleware import LoggingMiddleware
 from src.middleware.error_middleware import ErrorMiddleware
-from src.middleware.database_middleware import DatabaseMiddleware
 
 
 def setup_logging():
@@ -71,18 +68,15 @@ def create_dispatcher() -> Dispatcher:
     dispatcher = Dispatcher(storage=MemoryStorage())
     
     # Register middleware in order of execution
-    dispatcher.message.middleware(DatabaseMiddleware())
-    dispatcher.callback_query.middleware(DatabaseMiddleware())
     dispatcher.message.middleware(LoggingMiddleware())
     dispatcher.callback_query.middleware(LoggingMiddleware())
     dispatcher.message.middleware(ErrorMiddleware())
     dispatcher.callback_query.middleware(ErrorMiddleware())
     
     # Register handlers
-    dispatcher.include_router(start_handler.router)
-    dispatcher.include_router(callback_handler.router)
-    dispatcher.include_router(submission_handler.router)
-    dispatcher.include_router(history_handler.router)
+    dispatcher.include_router(start_router)
+    dispatcher.include_router(callback_router)
+    dispatcher.include_router(submission_router)
     
     return dispatcher
 
@@ -104,16 +98,9 @@ async def setup_bot_commands(bot: Bot):
 
 
 async def setup_database():
-    """Initialize and migrate database."""
+    """Database setup - disabled for simplified version."""
     logger = logging.getLogger(__name__)
-    
-    logger.info("Checking database connection...")
-    if not await check_database_connection():
-        raise RuntimeError("Database connection failed")
-    
-    logger.info("Running database migrations...")
-    await migrate_database()
-    logger.info("Database setup completed")
+    logger.info("Database setup skipped - running in simplified mode")
 
 
 async def start_bot():
@@ -190,11 +177,7 @@ async def stop_bot():
         except Exception as e:
             logger.error(f"Error closing bot session: {e}")
     
-    logger.info("Closing database connections...")
-    try:
-        await close_database()
-    except Exception as e:
-        logger.error(f"Error closing database: {e}")
+    logger.info("Database cleanup skipped - running in simplified mode")
     
     logger.info("Bot stopped gracefully")
 
@@ -206,8 +189,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # Startup
     await setup_database()
     yield
-    # Shutdown
-    await close_database()
+    # Shutdown - no database cleanup needed for simplified version
+    pass
 
 
 app = FastAPI(
@@ -219,43 +202,28 @@ app = FastAPI(
 
 
 @app.get("/health")
-async def health_check(session: AsyncSession = Depends(get_db_session)):
+async def health_check():
     """Health check endpoint for deployment monitoring."""
-    from sqlalchemy import text
-    
     try:
-        # Check database connection
-        await session.execute(text("SELECT 1"))
-        
-        # Check bot connection if available
-        bot_status = "unknown"
-        if bot:
-            try:
-                await bot.get_me()
-                bot_status = "connected"
-            except Exception:
-                bot_status = "disconnected"
-        
         return {
             "status": "healthy",
-            "database": "connected",
-            "bot": bot_status,
-            "version": "1.0.0"
+            "service": "ielts-telegram-bot",
+            "mode": "simplified",
+            "timestamp": datetime.now().isoformat(),
+            "database": "disabled"
         }
     except Exception as e:
         return {
-            "status": "unhealthy",
+            "status": "unhealthy", 
             "error": str(e),
-            "database": "disconnected",
-            "bot": "unknown",
-            "version": "1.0.0"
+            "timestamp": datetime.now().isoformat()
         }
 
 
 @app.get("/")
 async def root():
     """Root endpoint."""
-    return {"message": "IELTS Telegram Bot API is running"}
+    return {"message": "IELTS Telegram Bot API is running - Simplified Mode"}
 
 
 async def run_bot_only():

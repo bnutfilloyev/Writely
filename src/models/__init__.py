@@ -1,16 +1,10 @@
 """
-Database models for the IELTS Telegram bot.
+Simplified models package without database dependencies.
 """
-from .user import User
-from .submission import Submission, TaskType, ProcessingStatus
-from .assessment import Assessment
-from .rate_limit import RateLimit
+
+# Only export the enums that we need for the simplified version
+from .enums import TaskType
 
 __all__ = [
-    "User",
-    "Submission", 
-    "TaskType",
-    "ProcessingStatus",
-    "Assessment",
-    "RateLimit"
+    "TaskType"
 ]

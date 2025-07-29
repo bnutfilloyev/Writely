@@ -1,29 +1,20 @@
 """
 Text submission handler for IELTS writing evaluation.
-Implements requirements 2.1, 2.2, 2.3, 2.4, 2.5 for text processing and validation.
+Simplified version that processes text directly without database storage.
 """
 from aiogram import Router, F
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from sqlalchemy.ext.asyncio import AsyncSession
 import logging
+import os
 from datetime import datetime
+from typing import Optional
 
-from src.services.evaluation_service import EvaluationService, EvaluationRequest
-from src.services.user_service import UserService
-from src.services.rate_limit_service import RateLimitService
+from src.services.ai_assessment_engine import AIAssessmentEngine, TaskType
+from src.services.text_processor import TextValidator, TaskTypeDetector
 from src.services.result_formatter import ResultFormatter
-from src.services.ai_assessment_engine import AIAssessmentEngine
-from src.repositories.user_repository import UserRepository
-from src.repositories.submission_repository import SubmissionRepository
-from src.repositories.assessment_repository import AssessmentRepository
-from src.repositories.rate_limit_repository import RateLimitRepository
-from src.models.submission import TaskType
-from src.exceptions import (
-    ErrorHandler, ErrorContext, ValidationError, RateLimitError, 
-    DatabaseError, AIServiceError, ConfigurationError
-)
+from src.exceptions import AIServiceError, ValidationError
 
 # Create global error handler instance
 error_handler = ErrorHandler()

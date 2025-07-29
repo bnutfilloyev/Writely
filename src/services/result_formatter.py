@@ -10,9 +10,8 @@ from dataclasses import dataclass
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 
-from src.services.evaluation_service import EvaluationResult
 from src.services.ai_assessment_engine import StructuredAssessment
-from src.models.submission import TaskType
+from src.models.enums import TaskType
 
 logger = logging.getLogger(__name__)
 
