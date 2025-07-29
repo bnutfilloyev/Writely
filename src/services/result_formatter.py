@@ -198,13 +198,23 @@ class ResultFormatter:
     def _format_band_scores(self, assessment: StructuredAssessment) -> str:
         """Format band scores section"""
         overall_emoji = self._get_score_emoji(assessment.overall_band_score)
+        ta_emoji = self._get_score_emoji(assessment.task_achievement_score)
+        cc_emoji = self._get_score_emoji(assessment.coherence_cohesion_score)
+        lr_emoji = self._get_score_emoji(assessment.lexical_resource_score)
+        gra_emoji = self._get_score_emoji(assessment.grammatical_accuracy_score)
         
-        scores_text = "📊 **Band Scores:**\n"
-        scores_text += f"• Task Achievement/Response: **{assessment.task_achievement_score:.1f}**\n"
-        scores_text += f"• Coherence and Cohesion: **{assessment.coherence_cohesion_score:.1f}**\n"
-        scores_text += f"• Lexical Resource: **{assessment.lexical_resource_score:.1f}**\n"
-        scores_text += f"• Grammatical Range & Accuracy: **{assessment.grammatical_accuracy_score:.1f}**\n\n"
-        scores_text += f"🎯 **Overall Band Score: {overall_emoji} {assessment.overall_band_score:.1f}**\n\n"
+        scores_text = """
+📊✨ *Your IELTS Band Scores* ✨📊
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
+        scores_text += f"🎯 *Task Achievement/Response:* {ta_emoji} **{assessment.task_achievement_score:.1f}**\n"
+        scores_text += f"🔗 *Coherence & Cohesion:* {cc_emoji} **{assessment.coherence_cohesion_score:.1f}**\n"
+        scores_text += f"📚 *Lexical Resource:* {lr_emoji} **{assessment.lexical_resource_score:.1f}**\n"
+        scores_text += f"✍️ *Grammar & Accuracy:* {gra_emoji} **{assessment.grammatical_accuracy_score:.1f}**\n"
+        scores_text += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        scores_text += f"🏆 *OVERALL BAND SCORE: {overall_emoji} {assessment.overall_band_score:.1f}* 🏆\n"
+        scores_text += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
         
         return scores_text
     
@@ -213,8 +223,13 @@ class ResultFormatter:
         if not assessment.detailed_feedback:
             return ""
         
-        feedback_text = "📝 **Detailed Feedback:**\n"
-        feedback_text += f"{assessment.detailed_feedback}\n\n"
+        feedback_text = """
+📝✨ *Detailed Feedback* ✨📝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
+        feedback_text += f"💬 _{assessment.detailed_feedback}_\n"
+        feedback_text += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
         
         return feedback_text
     
@@ -223,9 +238,14 @@ class ResultFormatter:
         if not assessment.improvement_suggestions:
             return ""
         
-        suggestions_text = "💡 **Improvement Suggestions:**\n"
+        suggestions_text = """
+💡✨ *Improvement Suggestions* ✨💡
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
         for i, suggestion in enumerate(assessment.improvement_suggestions, 1):
-            suggestions_text += f"{i}. {suggestion}\n"
+            suggestions_text += f"🎯 *{i}.* {suggestion}\n"
+        suggestions_text += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
         
         return suggestions_text
     

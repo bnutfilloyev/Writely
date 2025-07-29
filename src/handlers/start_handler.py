@@ -15,9 +15,10 @@ router = Router()
 def get_main_menu_keyboard() -> InlineKeyboardMarkup:
     """Create main menu inline keyboard."""
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="📄 Submit Writing Task 1", callback_data="submit_task1")],
-        [InlineKeyboardButton(text="📝 Submit Writing Task 2", callback_data="submit_task2")],
-        [InlineKeyboardButton(text="📊 Check Band Score History", callback_data="show_history")]
+        [InlineKeyboardButton(text="� Submit WTask 1 (Charts/Graphs)", callback_data="submit_task1")],
+        [InlineKeyboardButton(text="📝 Submit Task 2 (Essays)", callback_data="submit_task2")],
+        [InlineKeyboardButton(text="� CView My Progress History", callback_data="show_history")],
+        [InlineKeyboardButton(text="ℹ️ About Writely Robot", callback_data="about_bot")]
     ])
     return keyboard
 
@@ -42,17 +43,27 @@ async def handle_start_command(message: Message, session: AsyncSession):
     # Create personalized greeting
     display_name = user_profile.first_name or user_profile.username or "there"
     
-    greeting_text = (
-        f"👋 Hello {display_name}! Welcome to the IELTS Writing Evaluation Bot.\n\n"
-        "I can help you improve your IELTS writing skills by providing detailed feedback "
-        "and band scores for both Task 1 and Task 2 essays.\n\n"
-        "📝 **What I can do:**\n"
-        "• Evaluate your writing with detailed band scores\n"
-        "• Provide specific improvement suggestions\n"
-        "• Track your progress over time\n"
-        "• Support both Task 1 and Task 2 formats\n\n"
-        "Choose an option below to get started:"
-    )
+    greeting_text = f"""
+🤖✨ *Hello {display_name}!* ✨🤖
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 *Welcome to Writely Robot!* 🎯
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 *Your AI-powered IELTS writing coach is here!*
+Ready to help you achieve your target band score! 📈
+
+✨ *What I can do for you:*
+📊 *Task 1:* Charts, graphs, diagrams evaluation
+📝 *Task 2:* Essay writing assessment  
+🎯 *Scoring:* All four IELTS criteria analyzed
+💡 *Feedback:* Personalized improvement tips
+📈 *Progress:* Track your writing journey
+🤖 *AI Model:* Advanced language analysis
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 *Choose an option below to start improving!* 👇
+"""
     
     await message.answer(
         text=greeting_text,

@@ -6,6 +6,7 @@ import logging
 import signal
 import sys
 import os
+import time
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
@@ -13,6 +14,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.types import BotCommand
 from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 import uvicorn
@@ -76,6 +78,22 @@ def create_dispatcher() -> Dispatcher:
     return dispatcher
 
 
+async def setup_bot_commands(bot: Bot):
+    """Set up bot commands for the menu."""
+    commands = [
+        BotCommand(command="start", description="🚀 Start using Writely robot"),
+        BotCommand(command="help", description="❓ Get help and instructions"),
+        BotCommand(command="task1", description="📊 Submit IELTS Writing Task 1"),
+        BotCommand(command="task2", description="📝 Submit IELTS Writing Task 2"),
+        BotCommand(command="history", description="📈 View your evaluation history"),
+        BotCommand(command="about", description="ℹ️ About Writely robot"),
+    ]
+    
+    await bot.set_my_commands(commands)
+    logger = logging.getLogger(__name__)
+    logger.info("Bot commands set up successfully")
+
+
 async def setup_database():
     """Initialize and migrate database."""
     logger = logging.getLogger(__name__)
@@ -105,6 +123,32 @@ async def start_bot():
         # Get bot info
         bot_info = await bot.get_me()
         logger.info(f"Bot started: @{bot_info.username} ({bot_info.first_name})")
+        
+        # Set up bot commands
+        await setup_bot_commands(bot)
+        
+        # Send startup message to admin (if ADMIN_ID is set)
+        admin_id = os.getenv("ADMIN_ID")
+        if admin_id:
+            try:
+                await bot.send_message(
+                    chat_id=int(admin_id),
+                    text="🤖✨ *Writely Robot is Online!* ✨🤖\n\n"
+                         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                         f"🤖 *Bot:* @{bot_info.username}\n"
+                         f"✅ *Status:* Online & Ready\n"
+                         f"🕐 *Started:* `{time.strftime('%Y-%m-%d %H:%M:%S')}`\n"
+                         f"👨‍💼 *Admin:* @bnutfilloyev\n"
+                         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+                         "🎯 *Ready to help users improve their IELTS writing!*\n"
+                         "📝 *Features:* Task 1 & 2 Evaluation\n"
+                         "🧠 *AI Model:* Llama 3.1 8B (Free)\n"
+                         "🌟 *Status:* All systems operational!",
+                    parse_mode="Markdown"
+                )
+                logger.info(f"Startup notification sent to admin: {admin_id}")
+            except Exception as e:
+                logger.warning(f"Failed to send startup notification to admin: {e}")
         
         # Start polling
         logger.info("Starting bot polling...")
