@@ -53,7 +53,3 @@ wheels/
 .coverage
 .pytest_cache/
 htmlcov/
-
-# Deployment
-Dockerfile
-docker-compose.yml
