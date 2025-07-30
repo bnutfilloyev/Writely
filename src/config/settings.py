@@ -37,6 +37,9 @@ class Settings:
     API_HOST: str = os.getenv("API_HOST", "0.0.0.0")
     API_PORT: int = int(os.getenv("API_PORT", "8000"))
     
+    # MongoDB Configuration
+    MONGODB_URL: str = os.getenv("MONGODB_URL", "mongodb://localhost:27017/ielts_analytics")
+    
     @classmethod
     def validate_required_settings(cls) -> None:
         """Validate that all required settings are present."""

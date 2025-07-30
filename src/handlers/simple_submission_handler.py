@@ -12,6 +12,7 @@ import os
 from src.services.ai_assessment_engine import AIAssessmentEngine, StructuredAssessment
 from src.services.text_processor import TextValidator, TaskTypeDetector, ValidationError
 from src.services.simple_result_formatter import ResultFormatter
+from src.services.analytics_service import analytics_service
 from src.exceptions import AIServiceError
 
 logger = logging.getLogger(__name__)
@@ -143,6 +144,16 @@ async def handle_text_submission(message: Message, state: FSMContext):
             text=formatted_result.text,
             reply_markup=get_back_to_menu_keyboard(),
             parse_mode=formatted_result.parse_mode
+        )
+        
+        # Track submission analytics
+        word_count = len(message.text.split())
+        overall_score = getattr(structured_assessment, 'overall_score', None)
+        await analytics_service.track_submission(
+            user_id=message.from_user.id,
+            task_type=task_type.value,
+            word_count=word_count,
+            score=overall_score
         )
         
         # Clear state
