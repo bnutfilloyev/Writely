@@ -1,37 +1,36 @@
 version: '3.8'
 
 services:
-  # postgres:
-  #   image: postgres:15-alpine
-  #   container_name: ielts-postgres
-  #   restart: unless-stopped
-  #   environment:
-  #     POSTGRES_DB: ielts_bot
-  #     POSTGRES_USER: ielts_user
-  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-  #     POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   ports:
-  #     - "5432:5432"
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready -U ielts_user -d ielts_bot"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
-  #   logging:
-  #     driver: "json-file"
-  #     options:
-  #       max-size: "10m"
-  #       max-file: "3"
+  mongodb:
+    image: mongo:7-jammy
+    container_name: ielts-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ielts_analytics
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27000:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   ielts-bot:
     build: .
     container_name: ielts-telegram-bot
     restart: unless-stopped
-    # depends_on:
-    #   postgres:
-    #     condition: service_healthy
+    depends_on:
+      mongodb:
+        condition: service_healthy
     environment:
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - ADMIN_ID=${ADMIN_ID}
@@ -40,12 +39,6 @@ services:
       - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
       - OPENROUTER_SITE_URL=${OPENROUTER_SITE_URL:-https://ielts-telegram-bot.local}
       - OPENROUTER_SITE_NAME=${OPENROUTER_SITE_NAME:-IELTS Writing Bot}
-      - DATABASE_URL=postgresql+asyncpg://ielts_user:${POSTGRES_PASSWORD}@postgres:5432/ielts_bot
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_DB=ielts_bot
-      - POSTGRES_USER=ielts_user
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - DB_POOL_SIZE=${DB_POOL_SIZE:-10}
       - DB_MAX_OVERFLOW=${DB_MAX_OVERFLOW:-20}
       - DB_POOL_RECYCLE=${DB_POOL_RECYCLE:-3600}
@@ -57,22 +50,8 @@ services:
       - PRO_DAILY_LIMIT=${PRO_DAILY_LIMIT:-50}
       - API_HOST=0.0.0.0
       - API_PORT=8080
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./data:/app/data
-      - ./logs:/app/logs
-    healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8080/health', timeout=5)"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+      - MONGODB_URL=mongodb://${MONGO_ROOT_USER:-admin}:${MONGO_ROOT_PASSWORD}@mongodb:27017/ielts_analytics?authSource=admin
 
 volumes:
   postgres_data:
+  mongodb_data:

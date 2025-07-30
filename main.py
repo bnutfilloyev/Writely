@@ -21,6 +21,8 @@ from src.config.logging_config import setup_production_logging, get_access_logge
 from src.handlers import start_router, submission_router, callback_router
 from src.middleware.logging_middleware import LoggingMiddleware
 from src.middleware.error_middleware import ErrorMiddleware
+from src.middleware.analytics_middleware import AnalyticsMiddleware
+from src.services.analytics_service import analytics_service
 
 
 def setup_logging():
@@ -67,6 +69,8 @@ def create_dispatcher() -> Dispatcher:
     # Register middleware in order of execution
     dispatcher.message.middleware(LoggingMiddleware())
     dispatcher.callback_query.middleware(LoggingMiddleware())
+    dispatcher.message.middleware(AnalyticsMiddleware())
+    dispatcher.callback_query.middleware(AnalyticsMiddleware())
     dispatcher.message.middleware(ErrorMiddleware())
     dispatcher.callback_query.middleware(ErrorMiddleware())
     
@@ -95,9 +99,13 @@ async def setup_bot_commands(bot: Bot):
 
 
 async def setup_database():
-    """Database setup - disabled for simplified version."""
+    """Setup MongoDB connection for analytics."""
     logger = logging.getLogger(__name__)
-    logger.info("Database setup skipped - running in simplified mode")
+    try:
+        await analytics_service.connect()
+        logger.info("MongoDB analytics service initialized")
+    except Exception as e:
+        logger.warning(f"MongoDB connection failed, analytics disabled: {e}")
 
 
 async def start_bot():
@@ -172,7 +180,12 @@ async def stop_bot():
         except Exception as e:
             logger.error(f"Error closing bot session: {e}")
     
-    logger.info("Database cleanup skipped - running in simplified mode")
+    # Cleanup MongoDB connection
+    try:
+        await analytics_service.disconnect()
+        logger.info("MongoDB analytics service disconnected")
+    except Exception as e:
+        logger.error(f"Error disconnecting MongoDB: {e}")
     
     logger.info("Bot stopped gracefully")
 
