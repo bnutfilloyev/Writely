@@ -46,9 +46,9 @@ async def handle_start_command(message: Message, session: AsyncSession):
     greeting_text = f"""
 🤖✨ *Hello {display_name}!* ✨🤖
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 🎯 *Welcome to Writely Robot!* 🎯
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 
 🚀 *Your AI-powered IELTS writing coach is here!*
 Ready to help you achieve your target band score! 📈
@@ -61,7 +61,7 @@ Ready to help you achieve your target band score! 📈
 📈 *Progress:* Track your writing journey
 🤖 *AI Model:* Advanced language analysis
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 🎯 *Choose an option below to start improving!* 👇
 """
     

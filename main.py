@@ -8,16 +8,13 @@ import sys
 import os
 import time
 from datetime import datetime
-from contextlib import asynccontextmanager
-from typing import AsyncGenerator
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand
-from fastapi import FastAPI
-import uvicorn
+
 
 from src.config.settings import settings
 from src.config.logging_config import setup_production_logging, get_access_logger
@@ -130,12 +127,10 @@ async def start_bot():
                 await bot.send_message(
                     chat_id=int(admin_id),
                     text="🤖✨ *Writely Robot is Online!* ✨🤖\n\n"
-                         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
                          f"🤖 *Bot:* @{bot_info.username}\n"
                          f"✅ *Status:* Online & Ready\n"
                          f"🕐 *Started:* `{time.strftime('%Y-%m-%d %H:%M:%S')}`\n"
-                         f"👨‍💼 *Admin:* @bnutfilloyev\n"
-                         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+                         f"👨‍💼 *Admin:* @bnutfilloyev\n\n"
                          "🎯 *Ready to help users improve their IELTS writing!*\n"
                          "📝 *Features:* Task 1 & 2 Evaluation\n"
                          "🧠 *AI Model:* Llama 3.1 8B (Free)\n"
@@ -182,48 +177,9 @@ async def stop_bot():
     logger.info("Bot stopped gracefully")
 
 
-# FastAPI app for health checks and webhooks
-@asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    """FastAPI lifespan context manager."""
-    # Startup
-    await setup_database()
-    yield
-    # Shutdown - no database cleanup needed for simplified version
-    pass
 
 
-app = FastAPI(
-    title="IELTS Telegram Bot API",
-    description="Health check and webhook endpoints for IELTS Telegram Bot",
-    version="1.0.0",
-    lifespan=lifespan
-)
 
-
-@app.get("/health")
-async def health_check():
-    """Health check endpoint for deployment monitoring."""
-    try:
-        return {
-            "status": "healthy",
-            "service": "ielts-telegram-bot",
-            "mode": "simplified",
-            "timestamp": datetime.now().isoformat(),
-            "database": "disabled"
-        }
-    except Exception as e:
-        return {
-            "status": "unhealthy", 
-            "error": str(e),
-            "timestamp": datetime.now().isoformat()
-        }
-
-
-@app.get("/")
-async def root():
-    """Root endpoint."""
-    return {"message": "IELTS Telegram Bot API is running - Simplified Mode"}
 
 
 async def run_bot_only():
@@ -252,43 +208,9 @@ async def run_bot_only():
         await stop_bot()
 
 
-async def run_with_api():
-    """Run bot with FastAPI server for health checks."""
-    setup_logging()
-    logger = logging.getLogger(__name__)
-    
-    try:
-        # Validate configuration
-        settings.validate_required_settings()
-        logger.info("Configuration validated successfully")
-        
-        # Start bot in background
-        bot_task = asyncio.create_task(run_bot_only())
-        
-        # Start FastAPI server
-        config = uvicorn.Config(
-            app,
-            host=settings.API_HOST,
-            port=settings.API_PORT,
-            log_level=settings.LOG_LEVEL.lower()
-        )
-        server = uvicorn.Server(config)
-        
-        logger.info(f"Starting API server on {settings.API_HOST}:{settings.API_PORT}")
-        await server.serve()
-        
-    except Exception as e:
-        logger.error(f"Error running with API: {e}")
-        raise
-
-
 async def main():
     """Main application entry point."""
-    # Run bot only by default, API server can be enabled via environment variable
-    if settings.DEBUG or os.getenv("ENABLE_API", "false").lower() == "true":
-        await run_with_api()
-    else:
-        await run_bot_only()
+    await run_bot_only()
 
 
 if __name__ == "__main__":

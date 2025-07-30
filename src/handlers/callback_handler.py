@@ -25,9 +25,9 @@ async def handle_back_to_menu(callback: CallbackQuery, state: FSMContext):
     welcome_text = """
 🏠✨ *Main Menu* ✨🏠
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 🤖 *Writely Robot* - Your IELTS Writing Coach
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 
 🎯 *Choose an option below to continue:*
 """
@@ -49,9 +49,9 @@ async def handle_submit_task1(callback: CallbackQuery, state: FSMContext):
     task1_text = """
 📊✨ *IELTS Writing Task 1 Submission* ✨📊
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 📈 *Charts, Graphs, Tables & Diagrams*
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 
 🎯 *Ready to evaluate your Task 1 writing!*
 Please send me your complete response below.
@@ -63,7 +63,7 @@ Please send me your complete response below.
 📝 *Structure:* Intro → Overview → Details
 ⏰ *Time:* Should take ~20 minutes
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ✍️ *Just type or paste your writing below:*
 """
     
@@ -88,9 +88,9 @@ async def handle_submit_task2(callback: CallbackQuery, state: FSMContext):
     task2_text = """
 📝✨ *IELTS Writing Task 2 Submission* ✨📝
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 🎭 *Essays & Opinion Writing*
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 
 🎯 *Ready to evaluate your Task 2 essay!*
 Please send me your complete response below.
@@ -103,7 +103,7 @@ Please send me your complete response below.
 📚 *Vocabulary:* Show range & accuracy
 ⏰ *Time:* Should take ~40 minutes
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ✍️ *Just type or paste your essay below:*
 """
     
@@ -125,9 +125,9 @@ async def handle_about_bot(callback: CallbackQuery):
     about_text = """
 🤖✨ *About Writely Robot* ✨🤖
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 🎯 *Your AI-Powered IELTS Writing Coach*
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 
 🚀 *What I Do:*
 📊 Evaluate IELTS Writing Task 1 & Task 2
@@ -151,7 +151,7 @@ async def handle_about_bot(callback: CallbackQuery):
 🆓 *Cost:* Completely FREE to use!
 🌟 *Mission:* Help you achieve your IELTS goals
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 💬 *Ready to improve your writing?* 🚀
 """
     

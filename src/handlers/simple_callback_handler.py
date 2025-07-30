@@ -117,10 +117,17 @@ async def handle_clarify_task1(callback: CallbackQuery, state: FSMContext):
                 self.from_user = type('obj', (object,), {'id': user_id})()
             
             async def answer(self, text: str, **kwargs):
-                await callback.message.edit_text(text=text, **kwargs)
+                # Return a fake message response that can be edited/deleted
+                class FakeMessageResponse:
+                    async def edit_text(self, text: str, **kwargs):
+                        await callback.message.edit_text(text=text, **kwargs)
+                    
+                    async def delete(self):
+                        pass  # Can't delete callback message
                 
-            async def delete(self):
-                pass  # Can't delete callback message
+                # First edit the callback message
+                await callback.message.edit_text(text=text, **kwargs)
+                return FakeMessageResponse()
         
         fake_message = FakeMessage(text, callback.from_user.id)
         await handle_text_submission(fake_message, state)
@@ -147,10 +154,17 @@ async def handle_clarify_task2(callback: CallbackQuery, state: FSMContext):
                 self.from_user = type('obj', (object,), {'id': user_id})()
             
             async def answer(self, text: str, **kwargs):
-                await callback.message.edit_text(text=text, **kwargs)
+                # Return a fake message response that can be edited/deleted
+                class FakeMessageResponse:
+                    async def edit_text(self, text: str, **kwargs):
+                        await callback.message.edit_text(text=text, **kwargs)
+                    
+                    async def delete(self):
+                        pass  # Can't delete callback message
                 
-            async def delete(self):
-                pass  # Can't delete callback message
+                # First edit the callback message
+                await callback.message.edit_text(text=text, **kwargs)
+                return FakeMessageResponse()
         
         fake_message = FakeMessage(text, callback.from_user.id)
         await handle_text_submission(fake_message, state)

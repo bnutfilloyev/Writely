@@ -205,15 +205,15 @@ class ResultFormatter:
         scores_text = """
 📊✨ *Your IELTS Band Scores* ✨📊
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 """
         scores_text += f"🎯 *Task Achievement/Response:* {ta_emoji} **{assessment.task_achievement_score:.1f}**\n"
         scores_text += f"🔗 *Coherence & Cohesion:* {cc_emoji} **{assessment.coherence_cohesion_score:.1f}**\n"
         scores_text += f"📚 *Lexical Resource:* {lr_emoji} **{assessment.lexical_resource_score:.1f}**\n"
         scores_text += f"✍️ *Grammar & Accuracy:* {gra_emoji} **{assessment.grammatical_accuracy_score:.1f}**\n"
-        scores_text += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        scores_text += "\n"
         scores_text += f"🏆 *OVERALL BAND SCORE: {overall_emoji} {assessment.overall_band_score:.1f}* 🏆\n"
-        scores_text += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        scores_text += "\n\n"
         
         return scores_text
     
@@ -225,10 +225,10 @@ class ResultFormatter:
         feedback_text = """
 📝✨ *Detailed Feedback* ✨📝
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 """
         feedback_text += f"💬 _{assessment.detailed_feedback}_\n"
-        feedback_text += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        feedback_text += "\n\n"
         
         return feedback_text
     
@@ -240,11 +240,11 @@ class ResultFormatter:
         suggestions_text = """
 💡✨ *Improvement Suggestions* ✨💡
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 """
         for i, suggestion in enumerate(assessment.improvement_suggestions, 1):
             suggestions_text += f"🎯 *{i}.* {suggestion}\n"
-        suggestions_text += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        suggestions_text += "\n\n"
         
         return suggestions_text
     
